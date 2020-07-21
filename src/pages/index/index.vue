@@ -1,14 +1,14 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view>
-			<text class="title">{{title}}</text>
-		</view>
+		<orchard @onGetUser="getUser"/>
+
 	</view>
 </template>
 
 <script>
+	import Orchard from "../../components/orchard";
 	export default {
+		components: {Orchard},
 		data() {
 			return {
 				title: 'Hello'
@@ -18,7 +18,35 @@
 
 		},
 		methods: {
+			getUser(e){
+				let { nickName, avatarUrl } = e.detail.userInfo
+				uni.login({
+					provider: 'weixin',
+					success:(res=>{
+						let { code } = res;
 
+						let request_data = {
+							code,
+							nick_name: nickName,
+							avatar_url: avatarUrl
+						}
+
+						uni.request({
+							url: "http://172.16.1.43:8080/api/wx_login/wx_login",
+							method:"POST",
+							header:{'content-type':'application/x-www-form-urlencoded'},
+							data:request_data,
+
+							success:(res)=>{
+								uni.setStorageSync("token",res.data.data.member_token)
+							}
+						})
+
+
+					}),
+
+				})
+			}
 		}
 	}
 </script>

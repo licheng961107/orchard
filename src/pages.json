@@ -5,6 +5,24 @@
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}
+		},
+		{
+			"path": "pages/index/index1",
+			"style": {
+				"navigationBarTitleText": "uni-ldc"
+			}
+		},
+		{
+			"path": "pages/index/index2",
+			"style": {
+				"navigationBarTitleText": "uni-ldcc"
+			}
+		},
+		{
+			"path": "pages/index/index3",
+			"style": {
+				"navigationBarTitleText": "uni-ldccc"
+			}
 		}
 	],
 	"globalStyle": {
