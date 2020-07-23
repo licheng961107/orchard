@@ -6,8 +6,8 @@
                     <view class="PersonalInformation_Content_inputborder">
                         <view class="PersonalInformation_Content_fill">姓名:</view>
                         <view class="PersonalInformation_Content_input">
-                            <input v-model="name" type="text" >
-                            <view v-if="nameBoolean" class="PersonalInformation_Content_inputFont">(不可修改)</view>
+                            <input v-model="name" type="text" :disabled="!nameBoolean">
+                            <view class="PersonalInformation_Content_inputFont">(不可修改)</view>
                         </view>
                     </view>
                 </view>
@@ -46,6 +46,8 @@
 </template>
 
 <script>
+    import {CommRequest} from "../comm/commRequest";
+
     export default {
         name: "PersonalInformation",
         data(){
@@ -77,29 +79,45 @@
         },
         mounted(){
             this.getData()
+
         },
         methods:{
             getData(){
-                uni.request({
-                    url:"http://172.16.1.43:8080/api/convert_user_info/get_convert_user_info",
-                    method:"get",
-                    header:{
-                        'content-type':'application/x-www-form-urlencoded',
-                        'MemberToken': uni.getStorageSync("token")
-                    },
-                    success(res){
-                       this.id = res.data.data.id
-                    }
+                var _id=this.id
+
+
+                CommRequest.doRequest({
+                    url:"/convert_user_info/get_convert_user_info",
+                    method:"GET",
+                    data:null,
+                }).then(res=>{
+                    debugger
+                    this.id = res.id;
+                    this.name=res.real_person_name;
+                    this.phone=res.phone_number;
+                    this.wxnumber=res.wx_account;
+                    this.ShippingAddress=res.delivery_address;
+
                 })
             },
             getUser(){
                 let url = this.id ? 'edit_convert_user_info' : 'add_convert_user_info'
+                let edit_data = {
+                    phone_number:this.phone,
+                    delivery_address:this.ShippingAddress
+                }
 
-                this.operateUser(url)
+                if(this.id){
+                    edit_data.id = this.id
+                }else{
+                    edit_data.wx_account = this.wxnumber
+                    edit_data.real_person_name = this.name
+                }
+                this.operateUser(url, edit_data)
             },
             operateUser(url, data){
 
-                wx.request({
+                uni.request({
                     url:"http://172.16.1.43:8080/api/convert_user_info/" + url,
                     method:"post",
                     data,
@@ -112,6 +130,39 @@
                     }
                 })
 
+            },
+            getUser_info(){
+                    var name=this.name;
+                    var phone=this.phone;
+                    var wxnumber=this.wxnumber;
+                    var ShippingAddress=this.ShippingAddress;
+                uni.request({
+                    url:"http://172.16.1.43:8080/api/convert_user_info/add_convert_user_info",
+                    method:"post",
+                    data:{
+
+                    },
+                    header:{
+                        'content-type':'application/x-www-form-urlencoded',
+                        'MemberToken': uni.getStorageSync("token")
+                    },
+                    success(res){
+                        console.log(res.data)
+                    }
+                })
+            },
+            modifyUser(){
+                uni.request({
+                    url:"http://172.16.1.43:8080/api/convert_user_info/edit_convert_user_info",
+                    method:"post",
+                    header:{
+                        'content-type':'application/x-www-form-urlencoded',
+                        'MemberToken': uni.getStorageSync("token")
+                    },
+                    success(res){
+                        console.log(res.data)
+                    }
+                })
             }
 
         }
