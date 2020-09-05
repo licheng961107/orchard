@@ -88,7 +88,7 @@
                 <!--                右手蒙层提示-->
                 <img mode="widthFix"  @click="clicknutrition" v-if="hintArray.nutritionImg" class="orchardPage_righthand" src="../assets/img/backgroundImgrighthand@2x.png" alt=""/>
                 <!--                枯萎的树-->
-                <img mode="widthFix"  @click="Get_fruitTree(terrList[0].id, 0)"  :class="terrList[0].state?'orchardPage_tree':'orchardPage_land'" :src=terrList[0].state?terrList[0].img1:terrList[0].img  alt="" :id="terrList[0].id"/>
+                <img mode="widthFix"  @click="Get_fruitTree(terrList[0].id, 0)"  :class="terrList[0].level == 1?'orchardPage_tree':'orchardPage_land'" :src=terrList[0].state?terrList[0].img1:terrList[0].img  alt="" :id="terrList[0].id"/>
             </view>
             <!--      左面操作-->
             <view class="orchardPage_leftImg">
@@ -372,7 +372,9 @@
             },
             //获取植物
             getBotany(){
-                botany();
+                botany().then(res=>{
+                    this.tree_list = res
+                });
             },
             //领取气泡奖励 水份 金币 养分
             receive_reward(id){
