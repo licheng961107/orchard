@@ -3,25 +3,41 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "果园"
 			}
 		},
 		{
-			"path": "pages/index/index1",
+			"path": "components/RankingList",
 			"style": {
-				"navigationBarTitleText": "uni-ldc"
+				"navigationBarTitleText": "金币排行榜"
+//				"navigationStyle":"custom"
 			}
 		},
 		{
-			"path": "pages/index/index2",
+			"path": "components/PersonalCenter",
 			"style": {
-				"navigationBarTitleText": "uni-ldcc"
+				"navigationBarTitleText": "我的"
+
 			}
 		},
 		{
-			"path": "pages/index/index3",
+			"path": "components/ReceiveRewards",
 			"style": {
-				"navigationBarTitleText": "uni-ldccc"
+				"navigationBarTitleText": "领取奖励"
+
+			}
+		},
+		{
+			"path": "components/balance",
+			"style": {
+				"navigationBarTitleText": "我的余额"
+			}
+		}
+	,
+		{
+			"path": "components/invitation",
+			"style": {
+				"navigationBarTitleText": "邀好友"
 			}
 		}
 	],

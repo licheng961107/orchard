@@ -6,8 +6,9 @@
                     <view class="PersonalInformation_Content_inputborder">
                         <view class="PersonalInformation_Content_fill">姓名:</view>
                         <view class="PersonalInformation_Content_input">
-                            <input v-model="name" type="text" :disabled="!nameBoolean">
-                            <view class="PersonalInformation_Content_inputFont">(不可修改)</view>
+                            <input v-model="name" :disabled="name?'disabled':''" type="text" >
+<!--                            <input v-model="name"  type="text" >-->
+                            <view v-if="nameBoolean"  class="PersonalInformation_Content_inputFont">(不可修改)</view>
                         </view>
                     </view>
                 </view>
@@ -23,7 +24,8 @@
                     <view class="PersonalInformation_Content_inputborder">
                         <view class="PersonalInformation_Content_fill">微信号:</view>
                         <view class="PersonalInformation_Content_input">
-                            <input  v-model="wxnumber" type="text" >
+                            <input  v-model="wxnumber"  :disabled="wxnumber?'disabled':''"  type="text" >
+<!--                            <input  v-model="wxnumber"    type="text" >-->
                             <view v-if="wxBoolean" class="PersonalInformation_Content_inputFont">(不可修改)</view>
                         </view>
                     </view>
@@ -42,14 +44,18 @@
                 <button @click="getUser()">保存信息</button>
             </view>
         </view>
+        <img mode="widthFix" @click="close" class="close" src="../assets/img/close@2x.png" alt="">
     </view>
 </template>
 
 <script>
     import {CommRequest} from "../comm/commRequest";
+    import {modif} from "../api/modify";
+    import {query_user} from "../api/query_user"
+    import { add_user } from "../api/add_user"
 
     export default {
-        name: "PersonalInformation",
+
         data(){
             return{
                 id:0,
@@ -79,90 +85,62 @@
         },
         mounted(){
             this.getData()
-
         },
         methods:{
             getData(){
-                var _id=this.id
-
-
-                CommRequest.doRequest({
-                    url:"/convert_user_info/get_convert_user_info",
-                    method:"GET",
-                    data:null,
-                }).then(res=>{
-                    debugger
-                    this.id = res.id;
-                    this.name=res.real_person_name;
-                    this.phone=res.phone_number;
-                    this.wxnumber=res.wx_account;
-                    this.ShippingAddress=res.delivery_address;
-
+                query_user().then(res=>{
+                    console.log(res)
+                    this.id = res.user_id;
+                    this.name = res.real_person_name;
+                    this.phone = res.phone_number;
+                    this.wxnumber = res.wx_account;
+                    this.ShippingAddress = res.delivery_address;
                 })
             },
             getUser(){
-                let url = this.id ? 'edit_convert_user_info' : 'add_convert_user_info'
                 let edit_data = {
                     phone_number:this.phone,
-                    delivery_address:this.ShippingAddress
+                    delivery_address:this.ShippingAddress,
+                    real_person_name : this.name,
+                    wx_account : this.wxnumber
                 }
-
                 if(this.id){
                     edit_data.id = this.id
-                }else{
-                    edit_data.wx_account = this.wxnumber
-                    edit_data.real_person_name = this.name
                 }
-                this.operateUser(url, edit_data)
-            },
-            operateUser(url, data){
 
-                uni.request({
-                    url:"http://172.16.1.43:8080/api/convert_user_info/" + url,
-                    method:"post",
-                    data,
-                    header:{
-                        'content-type':'application/x-www-form-urlencoded',
-                        'MemberToken': uni.getStorageSync("token")
-                    },
-                    success(res){
+                if(this.id <= 0){
+                    add_user(edit_data).then( res => {
+                        uni.showToast({
+                            title:"添加成功",
+                            icon:"success",
+                            duration:2000,
+                        })
+                    })
+
+                }else {
+                    modif(edit_data).then( res => {
+                        if ( this.phone !="" && this.ShippingAddress !="" ){
+                            uni.showToast({
+                                title:"保存成功",
+                                icon:"success",
+                                duration:2000,
+                            })
+                        }else{
+                            uni.showToast({
+                                title:"保存失败",
+                                icon:"success",
+                                duration:2000,
+                            })
+                        }
                         console.log(res)
-                    }
-                })
+                    })
+
+                }
 
             },
-            getUser_info(){
-                    var name=this.name;
-                    var phone=this.phone;
-                    var wxnumber=this.wxnumber;
-                    var ShippingAddress=this.ShippingAddress;
-                uni.request({
-                    url:"http://172.16.1.43:8080/api/convert_user_info/add_convert_user_info",
-                    method:"post",
-                    data:{
 
-                    },
-                    header:{
-                        'content-type':'application/x-www-form-urlencoded',
-                        'MemberToken': uni.getStorageSync("token")
-                    },
-                    success(res){
-                        console.log(res.data)
-                    }
-                })
-            },
-            modifyUser(){
-                uni.request({
-                    url:"http://172.16.1.43:8080/api/convert_user_info/edit_convert_user_info",
-                    method:"post",
-                    header:{
-                        'content-type':'application/x-www-form-urlencoded',
-                        'MemberToken': uni.getStorageSync("token")
-                    },
-                    success(res){
-                        console.log(res.data)
-                    }
-                })
+            close(){
+                this.$emit("onclose")
             }
 
         }
@@ -269,5 +247,11 @@
         font-family:PingFang SC;
         font-weight:bold;
         color:rgba(255,255,255,1);
+    }
+    .close{
+        width: 50upx;
+        height: 50upx;
+        position: absolute;
+        top: 980upx;
     }
 </style>

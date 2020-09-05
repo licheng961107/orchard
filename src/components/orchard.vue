@@ -3,61 +3,76 @@
     <view class="orchard_popup">
       <view class="orchard_popup_titleBox">
         <view class="orchard_popup_title">
-          <text class="orchard_popup_title_font">种子库</text>
+          <span class="orchard_popup_title_font">种子库</span>
         </view>
       </view>
       <view class="orchard_popup_contentBox">
-        <view class="orchard_popup_content" v-for="(item,index) in dataList" :key="index">
+        <view class="orchard_popup_content"  v-for="(item,index) in dataList" :key="index">
           <view class="orchard_popup_content_top">
             <view class="orchard_popup_content_top_img">
-
+              <img mode="WidthFix" :src=item.img alt="">
             </view>
             <view class="orchard_popup_content_top_font">
-              {{item.font}}
+              {{item.font+item.number}}
             </view>
           </view>
           <view class="orchard_popup_content_down">
-            <button class="orchard_popup_content_down_button">
+            <view class="orchard_popup_content_down_button" @click="plant(item.id)">
               种植
-            </button>
+            </view>
           </view>
         </view>
       </view>
-      <view class="orchard_popup_content_button" >
+      <view class="orchard_popup_content_button">
         <img src="../assets/img/button3@2x.png" alt="">
-        <button class="orchard_popup_content_button_font" open-type="getUserInfo" @getuserinfo="getUser">
+        <view class="orchard_popup_content_button_font">
           推翻当前植物重新种植
-        </button>
+        </view>
       </view>
     </view>
+    <img  mode="widthFix" @click="close" class="orchard_close" src="../assets/img/close@2x.png" alt="">
   </view>
 </template>
 
 <script>
-    export default {
-        name: "orchard",
-        data(){
-          return{
-            dataList:[
-              {img:require("../assets/img/border513@2x.png"),content:"",font:"银色种子数量*1"},
-              {img:require("../assets/img/border513@2x.png"),content:"",font:"金苹果种子数量*1"},
-              {img:require("../assets/img/border513@2x.png"),content:"",font:"果核种子数量*1"},
-              {img:require("../assets/img/border513@2x.png"),content:"",font:"稻田种子数量*1"},
-            ]
-          }
-        },
-        methods:{
-          jup(){
+  import {CommRequest} from "../comm/commRequest";
+  import {GetWarehouse} from "../api/getWarehouse";
 
-          },
-          getUser(e){
-            this.$emit("onGetUser" ,e),
-            wx.navigateTo({
-              url:"./index2",
-            })
-          },
-        }
+  export default {
+    name: "orchard",
+    data(){
+      return{
+        dataList:[
+          {id:1,img:require("../assets/img/SilverApple@2x.png"),content:"",font:"银色种子数量*",number:0},
+          {id:2,img:require("../assets/img/Walnut@2x.png"),content:"",font:"果核种子数量*",number:0},
+          {id:3,img:require("../assets/img/GoldenApple@2x.png"),content:"",font:"金苹果种子数量*",number:0},
+          {id:4,img:require("../assets/img/Wheat@2x.png"),content:"",font:"稻田种子数量*",number:0},
+        ],
+
+      }
+    },
+    mounted() {
+      this.getWarehouse()
+    },
+    methods:{
+
+      close(){
+        this.$emit("onchickSeedBank")
+      },
+      getWarehouse(){
+        GetWarehouse().then( res => {
+          console.log(res)
+          this.dataList[0].number = res.sliver_kernel;
+          this.dataList[1].number = res.kernel;
+          this.dataList[2].number = res.gold_kernel;
+          this.dataList[3].number = res.spike_price;
+        })
+      },
+      plant(index){
+        this.$emit("plant_seed",index)
+      }
     }
+  }
 </script>
 
 <style scoped>
@@ -73,23 +88,25 @@
   }
   .orchard_popup{
     width:690upx;
-    height:704upx;
+    height:703upx;
     background:rgba(255,236,190,1);
-    box-shadow:0 0 18upx 0 rgba(60,100, 173, 0.35);
-    border-radius:20upx;
+    box-shadow:0 0 9px 0 rgba(60,100, 173, 0.35);
+    border-radius:10upx;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
   }
   .orchard_popup_titleBox{
     width: 100%;
+    height: 100upx;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 20upx;
   }
   .orchard_popup_title{
     width:206upx;
-    height:60upx;
+    height:64upx;
     background:linear-gradient(0deg,rgba(255,180,61,1),rgba(255,221,129,1));
     border-radius:32upx;
     display: flex;
@@ -101,47 +118,55 @@
     font-family:PingFang SC;
     font-weight:bold;
     color:rgba(255,255,255,1);
+
   }
   .orchard_popup_contentBox{
-    width: 668upx;
-    height: 460upx;
+    width: 594upx;
+    height: 494upx;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
   }
   .orchard_popup_content{
-    width:284upx;
-    height:214upx;
+    width:216upx;
+    height:170upx;
     display: flex;
     align-content: space-around;
     justify-content: center;
     flex-wrap: wrap;
   }
   .orchard_popup_content_top{
-    width:200upx;
-    height:154upx;
+    width:390upx;
+    height:164upx;
     background:rgba(255,255,255,1);
     border:2upx solid rgba(255, 203, 99, 1);
-    box-shadow:0 0 14upx 0 rgba(183, 83, 150, 0.35);
-    border-radius:10upx;
+    box-shadow:0 0 7px 0 rgba(183, 83, 150, 0.35);
+    border-radius:5upx;
     display: flex;
     align-content: space-around;
     justify-content: center;
     flex-wrap: wrap;
   }
   .orchard_popup_content_top_img{
-    width: 138upx;
+    width: 140upx;
+    height: 90upx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .orchard_popup_content_top_img>img{
+    width: 137upx;
     height: 92upx;
-    border: 2upx steelblue solid;
   }
   .orchard_popup_content_top_font{
     width:100%;
-    font-size:16upx;
+    font-size:24upx;
     font-family:PingFang SC;
     color:rgba(51,51,51,1);
     word-break:keep-all;
     font-weight:bold;
+    transform: scale(0.7);
     text-align: center;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -151,23 +176,17 @@
     width:94upx;
     height:40upx;
     background:linear-gradient(0deg,rgba(255,180,61,1),rgba(255,221,129,1));
-    border-radius:20upx;
+    border-radius:15upx;
     border: none;
     outline: none;
-    margin-top: 12upx;
+    margin-top: 6upx;
     font-size:22upx;
     font-family:PingFang SC;
     font-weight:500;
     color:rgba(51,51,51,1);
-    white-space:nowrap;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .orchard_popup_content_down_button>text{
-    width:44upx;
-    height:22upx;
-
   }
   .orchard_popup_content_button{
     width: 100%;
@@ -178,15 +197,24 @@
     align-items: center;
   }
   .orchard_popup_content_button>img{
-    width: 260upx;
+    width: 230upx;
     height: 60upx;
   }
   .orchard_popup_content_button_font{
     position: absolute;
-    font-size:22upx;
+    font-size:21upx;
     font-family:PingFang SC;
     font-weight:500;
     color:rgba(255,255,255,1);
     white-space:nowrap;
+    top: 16upx;
+    transform:scale(0.9);
   }
+  .orchard_close{
+    position: absolute;
+    top: 1081upx;
+    width: 50upx;
+    height: 50upx;
+  }
+
 </style>

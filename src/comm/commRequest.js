@@ -26,6 +26,7 @@ class CommRequest {
                 if(res.data.code != 200){
                     uni.showToast({
                         title:res.data.msg
+
                     })
                 }else{
                     resolve(res.data.data)

@@ -30,45 +30,49 @@
         <view class="PersonalCenter_ContentDataBox">
             <view class="PersonalCenter_ContentDataBox_TopBox">
                 <view class="PersonalCenter_ContentDataBox_TopBoxData" v-for="(item ,index) in DataList" :key="index">
-                    <view class="PersonalCenter_ContentDataBox_TopBoxData_number" :style="{'color': ColorList[index]}">{{item.number}}</view>
+
+                    <view v-if="item.name != '提现入口' && item.name != '数据清零'">
+                        <view class="PersonalCenter_ContentDataBox_TopBoxData_number" :style="{'color': ColorList[index]}">{{item.number}}</view>
+                    </view>
+                    <view v-else>
+
+                        <view  @click="toWithdrawal" class="PersonalCenter_ContentDataBox_TopBoxData_img" v-if="item.name == '提现入口'">
+                            <img mode="widthFix"  src="../assets/img/icon-Withdrawal@2x.png" alt="">
+                        </view>
+                        <view class="PersonalCenter_ContentDataBox_TopBoxData_img" v-if="item.name == '数据清零'">
+                            <img mode="widthFix"  src="../assets/img/icon-Clearing@2x.png" alt="">
+                        </view>
+                    </view>
                     <view class="PersonalCenter_ContentDataBox_TopBoxData_font">{{item.name}}</view>
                 </view>
-                <view class="PersonalCenter_ContentDataBox_TopBoxData_img">
-                    <img src="../assets/img/icon-Clearing@2x.png" alt="">
-                </view>
-                <view class="PersonalCenter_ContentDataBox_TopBoxData_img1">
-                    <img src="../assets/img/icon-Withdrawal@2x.png" alt="">
-                </view>
+
             </view>
+
+
             <view class="PersonalCenter_ContentDataBox_DownBox">
                 <view class="PersonalCenter_ContentDataBox_DownBox_ImgBox">
                     <view class="PersonalCenter_ContentDataBox_DownBox_Img">
-                        <img src="../assets/img/backgroundImg34@2x.png" alt="">
-                        <img class="button" src="../assets/img/button2@2x.png" alt="">
+                        <img mode="widthFix "  src="../assets/img/backgroundImg34@2x.png" alt="">
+                        <img mode="widthFix "  src="../assets/img/backgroundImg694@2x.png" alt="">
                     </view>
-                    <view class="PersonalCenter_ContentDataBox_DownBox_Img">
-                        <img src="../assets/img/backgroundimg666@2x.png" alt="">
-                        <img class="button1" src="../assets/img/button@2x.png" alt="">
-                        <view class="PersonalCenter_ContentDataBox_DownBox_Img_font">
-                            <view>果果实兑换一张</view><view>联通15G</view><view>流量卡</view>
-                        </view>
-                        <view class="PersonalCenter_ContentDataBox_TopBoxData_downFont">
-                            有联通卡和移动卡20-60g流量免费送
-                        </view>
+                    <view class="PersonalCenter_ContentDataBox_DownFontBox">
+                        <view class="PersonalCenter_ContentDataBox_DownFont">40元兑换价值488任意皮肤</view>
+                        <view class="PersonalCenter_ContentDataBox_DownFont">有联通卡和移动卡20-60g流量免费送</view>
                     </view>
                 </view>
                 <view class="PersonalCenter_ContentDataBox_DownBox_Button">
-                    <img src="../assets/img/button4@2x.png" alt="">
+                    <img  mode="widthFix"  @click="toreceive" src="../assets/img/button4@2x.png" alt="">
                 </view>
             </view>
+
         </view>
         <view class="PersonalCenter_DownImgBox">
             <view class="PersonalCenter_DownImgborder">
                 <view class="PersonalCenter_DownImg">
-
+                    <img mode="widthFix "  class="PersonalCenter_DownImg" src="../assets/img/Banner@2x.png" alt="">
                 </view>
                 <view class="PersonalCenter_DownImg">
-
+                    <img mode="widthFix "   class="PersonalCenter_DownImg1" src="../assets/img/Banner4@2x.png" alt="">
                 </view>
             </view>
         </view>
@@ -78,6 +82,12 @@
 <script>
     export default {
         name: "PersonalCenter",
+        onShow(){
+            wx.setNavigationBarColor({
+                frontColor:"#ffffff",
+                backgroundColor:"#6eceff"
+            })
+        },
         data(){
             return{
                 DataList:[
@@ -107,8 +117,18 @@
         methods:{
             chickPoput(){
                 this.show = !this.show
-                console.log("11")
-            }
+            },
+            toreceive(){
+                uni.navigateTo({
+                    url:'/components/ReceiveRewards'
+                })
+            },
+            toWithdrawal(){
+                console.log(1)
+                uni.navigateTo({
+                    url:'/components/balance'
+                })
+            },
         }
     }
 </script>
@@ -121,7 +141,7 @@
         width: 100%;
         height: 100%;
         background:rgba(255,255,255,1);
-        box-shadow:0 0 18upx 0 rgba(143, 143, 143, 0.35);
+        box-shadow:0 0 18px 0 rgba(143, 143, 143, 0.35);
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
@@ -190,17 +210,18 @@
     }
     .PersonalCenter_TitleBox_leftButtonBox{
         width: 100%;
-        height: auto;
+        height: 38upx;
         position: relative;
     }
     .PersonalCenter_TitleBox_leftButtonBox>button{
-        width: 94upx;
-        height: 30upx;
         float: right;
         border-radius:20upx 0 0 20upx;
         background:linear-gradient(0deg,rgba(255,180,61,1),rgba(255,221,129,1));
         border: none;
         outline: none;
+        color: #ffffff;
+        height: 38upx;
+        font-size: 18upx;
     }
     .PersonalCenter_TitlePopup{
         background:rgba(255,255,255,1);
@@ -267,24 +288,15 @@
     .PersonalCenter_ContentDataBox_TopBoxData_img>img{
         width: 32upx;
         height: 34upx;
-        position: absolute;
-        top: 359upx;
-        left: 383upx;
+        display: block;
+        margin-bottom: 10upx;
     }
-    .PersonalCenter_ContentDataBox_TopBoxData_img1>img{
-        width: 32upx;
-        height: 34upx;
-        position: absolute;
-        top: 359upx;
-        right: 383upx;
-    }
+
     .PersonalCenter_ContentDataBox_DownBox{
         width: 725upx;
         height: 330upx;
-        border: 1upx steelblue solid;
         border-radius: 20upx;
         display: flex;
-        align-content: start;
         justify-content: space-around;
         flex-wrap: wrap;
         box-shadow: 2upx 2upx 2upx 2upx rgb(244,244,244);
@@ -293,53 +305,51 @@
     .PersonalCenter_ContentDataBox_DownBox_ImgBox{
         width: 670upx;
         height: 250upx;
+    }
+    .PersonalCenter_ContentDataBox_DownBox_Img{
+        width: 670upx;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        flex-wrap: wrap;
     }
-    .PersonalCenter_ContentDataBox_DownBox_Img{
-        position: relative;
-        width: auto;
+
+    .PersonalCenter_ContentDataBox_DownBox_Img>img{
+        width: 320upx;
+        height: 240upx;
+    }
+    .PersonalCenter_ContentDataBox_DownBox_Img>img:nth-child(1){
+        width: 320upx;
         height: 100%;
+        object-fit: cover;
     }
-    .button{
-        position: absolute;
-        z-index: 99999;
-        right: 100upx;
-        bottom:35upx ;
+
+
+    .PersonalCenter_ContentDataBox_DownFontBox{
+        width: 100%;
+        height: 30upx;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .PersonalCenter_ContentDataBox_DownFont{
+        width: 320upx;
+        font-size:18upx;
+        font-family:PingFang SC;
+        font-weight:500;
+        color:rgba(51,51,51,1);
+        text-align: center;
+    }
+    .PersonalCenter_ContentDataBox_DownFontBox{
+        width: 100%;
+        height: 30upx;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
     }
-    .button1{
-        position: absolute;
-        z-index: 99999;
-        right: 100upx;
-        bottom:35upx ;
-    }
-    .PersonalCenter_ContentDataBox_DownBox_Img_font{
-        position: absolute;
-        top: 25upx;
-        right: 25upx;
-        width:270upx;
-        height:96upx;
-        font-size:37upx;
-        font-family:Microsoft YaHei;
-        font-weight:bold;
-        color:rgba(255,255,255,1);
-        line-height:61upx;
-        text-shadow:0 4upx 0 rgba(30,31,172,0.57);
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        font-style: italic
-    }
-    .PersonalCenter_ContentDataBox_DownBox_Img_font>view:nth-child(2){
-        font-size:37upx;
-        font-family:Microsoft YaHei;
-        font-weight:bold;
-        color: rgba(255, 255, 83, 1);
-    }
-    .PersonalCenter_ContentDataBox_TopBoxData_downFont{
+    .PersonalCenter_ContentDataBox_DownFont{
+        width: 320upx;
         font-size:18upx;
         font-family:PingFang SC;
         font-weight:500;
@@ -347,7 +357,15 @@
         text-align: center;
     }
     .PersonalCenter_ContentDataBox_DownBox_Button{
-        margin-top: 20upx;
+        width: 100%;
+        height: 60upx;
+        display: flex;
+        justify-content: center;
+        margin-top: 30upx;
+    }
+    .PersonalCenter_ContentDataBox_DownBox_Button>img{
+        width: 215upx;
+        height: 52upx;
     }
     .PersonalCenter_DownImgBox{
         width: 690upx;
@@ -365,6 +383,12 @@
         border-radius: 20upx;
         width: 690upx;
         height: 180upx;
-        border: 1upx solid black;
     }
+    .PersonalCenter_DownImg1{
+        width: 690upx;
+        height: 180upx;
+        object-fit:none;
+        margin-top: 10upx;
+    }
+
 </style>
