@@ -11,27 +11,26 @@
                 <view class="Poputselection_contentBox_Selectseeds_borderBox" >
                     <view class="Poputselection_contentBox_Selectseeds_border" v-for="(item,index) in imgList" :key="index">
 <!--                        白色背景-->
-                        <view class="Poputselection_contentBox_Selectseeds_background">
-                            <view class="img_box">
-                                <img  class="Poputselection_contentBox_Selectseeds_img" :src=item.img alt="">
-                            </view>
+<!--                        <view  @click="switchCheckBox(item.id,item.seed_money)" :class="state == item.id && item.id != 2?'Poputselection_contentBox_Selectseeds_background1':'Poputselection_contentBox_Selectseeds_background'">-->
+                        <view  @click="switchCheckBox(item.id,item.seed_money)" :class="state == item.id?'Poputselection_contentBox_Selectseeds_background1':'Poputselection_contentBox_Selectseeds_background'">
+                        <img  class="Poputselection_contentBox_Selectseeds_img" :src=item.img alt="">
                             <view class="Poputselection_contentBox_Selectseeds_font">{{item.font}}</view>
                         </view>
-
-                        <view class="item" @click="switchCheckBox(item.key)" >
-                            <icons class="Poput_icon" type="checkbox-filled" color="#FFC248"  size="19" v-if="switchcheckbox[item.key]"/>
-                            <view class="circular"  v-if="!switchcheckbox[item.key]"></view>
+                        <view class="item"  >
+                            <icons class="Poput_icon" type="checkbox-filled" color="#FFC248"  size="18" v-if="state == item.id"/>
+                            <view class="circular"  v-if="state != item.id"></view>
                             <text>{{item.name}}</text>
                         </view>
-
-
                     </view>
                 </view>
             </view>
 <!--            底部按钮-->
             <view class="Poputselection_downButtonBox">
-                <view class="Poputselection_downButtonfont">成熟后可得30元</view>
-                <img @click="downBut" class="Poputselection_downButton" src="../assets/img/icon-button.png" alt="">
+                <view class="Poputselection_downButtonfont">成熟后可得
+                    <view class="money_style" >{{money}}元</view>
+                </view>
+<!--                <img  @click="plantseed(state)" class="Poputselection_downButton" src="https://www.shuimukeji.cn/static/image/img/icon-button.png" alt="">-->
+                <button class="Poputselection_downButton" open-type="getUserInfo"  @getuserinfo="get_user" >种植</button>
             </view>
         </view>
     </view>
@@ -39,42 +38,68 @@
 
 <script>
     import icons from "./../components/uni-icon/uni-icons"
+    import { plant_seed } from "../api/plant_warehouse";
+    import {commLogin} from "../api/login";
+    import  { all_asset } from "../api/all_asset";
+    import { botany } from "../api/get_botany"
+
     export default {
         name: "Poputselection",
         components:{ icons },
+        mounted() {
+
+        },
         data() {
             return {
                 imgList:[
-                    {color:'red',key:'GoldenApple',img:require("../assets/img/Walnut@2x.png"),name:"果核",font:'赠送果核果子一枚，种植一个月左右长成，拍卖可提现10元'},
-                    {color:'none',key:'SilverApple',img:require("../assets/img/SilverApple@2x.png"),name:"银苹果",font:'赠送银苹果种子一枚，种植三个月左右长成，拍卖可提现30元'},
-                    {color:'none',key:'Stone',img:require("../assets/img/GoldenApple@2x.png"),name:"金苹果",font: '赠送金稻穗一枚，根据任务种植长成，拍卖可提现80元'},
-                    {color:'none',key:'rice',img:require("../assets/img/Wheat@2x.png") ,name:"稻穗",font: '赠送金稻穗一枚，根据任务种植长成，拍卖可提现80元'},
+                    {id:2,color:'red',key:'GoldenApple',img:"https://www.shuimukeji.cn/static/image/img/Walnut@2x.png",name:"果核",font:'赠送果核果子一枚，种植一个月左右长成，拍卖可提现元',seed_money:'30'},
+                    {id:1,color:'none',key:'SilverApple',img:"https://www.shuimukeji.cn/static/image/img/SilverApple@2x.png",name:"银苹果",font:'赠送银苹果种子一枚，种植三个月左右长成，拍卖可提现元',seed_money:'30'},
+                    {id:3,color:'none',key:'Stone',img:"https://www.shuimukeji.cn/static/image/img/GoldenApple@2x.png",name:"金苹果",font: '赠送金稻穗一枚，根据任务种植长成，拍卖可提现元',seed_money:'120'},
+                    {id:4,color:'none',key:'rice',img:"https://www.shuimukeji.cn/static/image/img/Wheat@2x.png" ,name:"稻穗",font: '赠送金稻穗一枚，根据任务种植长成，拍卖可提现元',seed_money:'80'},
                 ],
                 switchcheckbox:{
-                    SilverApple: false,
                     GoldenApple: false,
+                    SilverApple: false,
                     Stone: false,
                     rice: false
                 },
+                state:0,
+                money:0,
             }
         },
         methods:{
-            switchCheckBox(index){
-                let count = 0
-                this.switchcheckbox[index] = !this.switchcheckbox[index]
-                for (let item in this.switchcheckbox){
-                    if(this.switchcheckbox[item]){
-                        count = count+1
-                        console.log(count)
-                    }
+            get_user(e){
+                let usertoken = uni.getStorageSync("token")
+                let that = this
+                if (!usertoken){
+                    commLogin(e,function () {
+                        that.plantseed(that.state)
+                        that.$emit("onInit")
+                    })
+                }else{
+                    that.plantseed(that.state)
+
                 }
-                if (count > 3){
-                    alert("只能选择三个")
-                    this.switchcheckbox[index] = false
+
+            },
+            switchCheckBox(index,seed_money){
+                if (index == 3){
+                 return
+                }else {
+                    this.state = index
+                    this.money = seed_money
                 }
             },
-            downBut(){
-                this.$emit('close')
+            plantseed(index){
+                let plant_type = {
+                    plant_type: index
+                }
+                plant_seed(plant_type).then(res =>{
+                    console.log("plant_seed", res)
+                    botany();
+
+                })
+                this.$emit("onInit")
             }
 
         }
@@ -161,7 +186,8 @@
         justify-content: center;
         flex-wrap: wrap;
         border: 2px solid red;
-        background-image: url("../assets/img/icon-top.png");
+        background-image: url("https://www.shuimukeji.cn/static/image/img/icon-top.png");
+
         background-repeat: no-repeat;
     }
     .Poputselection_contentBox_Selectseeds_background{
@@ -174,6 +200,18 @@
         align-content: space-around;
         justify-content: center;
         flex-wrap: wrap;
+    }
+    .Poputselection_contentBox_Selectseeds_background1{
+        width:237upx;
+        height:181upx;
+        background:rgba(255,255,255,1);
+        border:2upx solid rgba(255,194,72,1);
+        border-radius:10upx;
+        display: flex;
+        align-content: space-around;
+        justify-content: center;
+        flex-wrap: wrap;
+        border: 2px solid blue;
     }
 
     .img_box>img{
@@ -204,7 +242,7 @@
         border-radius:50%;
         position: relative;
         z-index: 1;
-        left: 15upx;
+        left: 5upx;
     }
     .item{
         width: 130upx;
@@ -244,9 +282,29 @@
         font-weight:500;
         color:rgba(101,101,101,1);
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
     }
     .Poputselection_downButton{
-        width: 261upx;
-        height: 90upx;
+        width: 350upx;
+        height: 45upx;
+        font-size: 22px;
+        font-family: PingFang SC;
+        font-weight: 500;
+        color: #FFFFFF;
+        background: linear-gradient(0deg, #FFB33D, #FFDC81);
+        border-radius: 30px;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        bottom: 35upx;
+    }
+    .money_style{
+        color: red;
     }
 </style>

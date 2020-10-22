@@ -3,13 +3,13 @@
     <view class="ReceiveRewards_box">
         <view class="ReceiveRewards_content">
             <view class="ReceiveRewards_contentImg" v-for="(item,index) in imgList" :key="index">
-                <img :src=item.img alt=""/>
+                <img @click="exchange(item.id,item.font)" :src=item.img alt=""/>
 <!--                <img src="../assets/img/backgroundimg40@2x.png" alt="">-->
                 <view class="ReceiveRewards_contentFont">{{item.font}}</view>
             </view>
         </view>
         <view class="ReceiveRewards_DownButtonBox">
-            <button>点击获取客服微信</button>
+            <button @click="click_wx">点击获取客服微信</button>
             <button @click="clickmessage">我的信息</button>
             <button @click="clickRecord">领取记录</button>
         </view>
@@ -18,12 +18,12 @@
         <CollectRecords class="Record_box" v-if="Record" @onclose="clickRecord"/>
         <PersonalInformation class="Mymessage" v-if="message" @onclose="clickmessage" />
         </view>
-    </view>
 </template>
 
 <script>
     import CollectRecords from "./CollectRecords";
     import PersonalInformation from "./PersonalInformation";
+    import { exchange_reward } from "../api/convert_gift_add";
 
     export default {
         name: "ReceiveRewards",
@@ -36,11 +36,11 @@
         data(){
             return{
                 imgList:[
-                    {img:'/assets/img/backgroundimg40@2x.png',font:"40元兑换加载488任意皮肤"},
-                    {img:'/assets/img/backgroundimg694@2x.png', font:"果核果实兑换联通卡15g流量"},
-                    {img:'/assets/img/backgroundimg719@2x.png', font:"70元兑换价值888任意皮肤"},
-                    {img:'/assets/img/backgroundimg333@2x.png', font:"银苹果果实兑换移动卡50g流量"},
-                    {img:'/assets/img/backgroundimg34@2x.png', font:"140元兑换价值288任意皮肤"},
+                    {id:"3",img:'https://www.shuimukeji.cn/static/image/img/backgroundimg40@2x.png',font:"40元兑换价值488任意皮肤"},
+                    {id:"1",img:'https://www.shuimukeji.cn/static/image/img/backgroundImg694@2x.png', font:"果核果实兑换联通卡15g流量"},
+                    {id:"4",img:'https://www.shuimukeji.cn/static/image/img/backgroundimg719@2x.png', font:"70元兑换价值888任意皮肤"},
+                    {id:"2",img:'https://www.shuimukeji.cn/static/image/img/backgroundimg333@2x.png', font:"银苹果果实兑换移动卡50g流量"},
+                    {id:"5",img:'https://www.shuimukeji.cn/static/image/img/backgroundImg34@2x.png', font:"140元兑换价值288任意皮肤"},
                 ],
                 Record:false,
                 message:false,
@@ -51,8 +51,37 @@
                 this.Record = !this.Record
             },
             clickmessage(){
-
                 this.message = !this.message
+            },
+            exchange(id,content){
+                let data = {
+                    gift_type:id
+                }
+                uni.showModal({
+                    title: '兑换奖励',
+                    content: `当前兑换${content}`,
+                    success (res) {
+                        if (res.confirm) {
+                            exchange_reward(data)
+                        } else if (res.cancel) {
+                        }
+                    }
+                })
+            },
+            click_wx(){
+                uni.showToast({
+                    title:'复制成功'
+                })
+                uni.setClipboardData({
+                    data:'bbb',
+                    success:function (res) {
+                        uni.getClipboardData({
+                            success:function (res) {
+                                console.log(res.data)
+                            }
+                        })
+                    }
+                })
             }
         },
         components:{
@@ -77,8 +106,8 @@
     }
     .popup{
         width: 100%;
-        height: 100em;
-        position: absolute;
+        height: 100%;
+        position: fixed;
         overflow-y: auto;
         background-color:gray;
         left:0;

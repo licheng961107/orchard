@@ -1,15 +1,21 @@
 <template>
     <view class="rainstorm_box">
         <view class="rainstorm_Mask"></view>
-        <img class="rainstorm_img" src="../assets/img/icon-sunlightImg@2x.png" alt="">
+        <img @click="click_sun_shine" class="rainstorm_img" src="https://www.shuimukeji.cn/static/image/img/icon-sunlightImg@2x.png" alt="">
         <view class="rainstorm_font">暴雨</view>
-        <img  class="rainstorm_img2" src="../assets/img/background-rainstorm.png" alt="">
+<!--        <img  class="rainstorm_img2" src="https://www.shuimukeji.cn/static/image/img/background-rainstorm.png" alt="">-->
     </view>
 </template>
 
 <script>
     export default {
-        name: "rainstorm"
+        name: "rainstorm",
+        methods:{
+            click_sun_shine(){
+                this.$emit("sun_shine")
+            }
+        }
+
     }
 </script>
 
@@ -35,6 +41,8 @@
     .rainstorm_img{
         width:140upx;
         height: 147upx;
+        position: relative;
+        z-index: 1;
     }
     .rainstorm_font{
         font-size:18upx;

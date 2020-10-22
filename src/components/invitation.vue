@@ -1,7 +1,11 @@
 <template>
     <view class="invitation_box">
         <!--    背景图-->
-        <img class="invitation_backgroundImg" src="../assets/img/backgroundImg10@2x.png" alt="">
+        <img class="invitation_backgroundImg" mode="widthFix"  src="https://www.shuimukeji.cn/static/image/img/backgroundImg10@2x.png" alt="">
+        <!--    邀请按钮-->
+        <button class="invitation_button" open-type="share" >
+            立即邀请 》
+        </button>
         <!--    底部数据-->
         <view class="invitation_ContentBox">
             <view class="invitation_Content">
@@ -36,8 +40,9 @@
                         <view class="invitation_Content_border_downiconBox">
                             <view class="invitation_Content_border_downicon">
                                 <view class="invitation_Content_border_downicon_show">
-                                    <img mode="widthFix" class="invitation_Content_border_downicon_Right" src="../assets/img/icon-Redenvelopes2@2x.png" alt="">
-                                    <view class="invitation_Content_border_downicon_Left">已邀请5人</view>
+                                    <img mode="widthFix" class="invitation_Content_border_downicon_Right" src="https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes2@2x.png" alt="">
+
+                                    <view class="invitation_Content_border_downicon_Left">已邀请{{share_number}}人</view>
                                 </view>
                             </view>
                         </view>
@@ -46,17 +51,27 @@
                 <!--      Banner图-->
                 <view class="invitation_BannerImgBox">
                     <view class="invitation_BannerImg">
-                        <img mode="widthFix" class="banner" src="../assets/img/Banner4@2x.png" alt="">
+                        <img  class="banner" src="https://www.shuimukeji.cn/static/image/img/Banner4@2x.png" alt="">
                     </view>
                 </view>
+
             </view>
         </view>
     </view>
 </template>
 
 <script>
+    import { share } from "../api/have_share_count"
     export default {
         name: "invitation",
+        onShareAppMessage: function(res){
+            return {
+                title: '多多果园',
+                desc: '种植心怡植物，果实还能卖大钱，更有王者皮肤可以领取。',
+                imageUrl: 'https://www.shuimukeji.cn/static/image/img/icon_48.png',
+                path: 'pages/index/index'
+            }
+        },
         onShow(){
             wx.setNavigationBarColor({
                 frontColor:"#ffffff",
@@ -66,25 +81,38 @@
         data(){
             return{
                 LeftList:[
-                    {iconImg:require('../assets/img/icon-Redenvelopes1@2x.png'),font:'1人100阳光'},
-                    {iconImg:require('../assets/img/icon-Redenvelopes1@2x.png'),font:'2人100养分'},
-                    {iconImg:require('../assets/img/icon-Redenvelopes1@2x.png'),font:'奖励任意288皮肤'},
-                    {iconImg:require('../assets/img/icon-Redenvelopes1@2x.png'),font:'4人200阳光'},
-                    {iconImg:require('../assets/img/icon-Redenvelopes1@2x.png'),font:'5人银色果核'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes1@2x.png',font:'1人100阳光'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes1@2x.png',font:'2人100养分'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes1@2x.png',font:'奖励任意288皮肤'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes1@2x.png',font:'4人200阳光'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes1@2x.png',font:'5人银色果核'},
                 ],
                 RightList:[
-                    {iconImg:require('../assets/img/icon-Redenvelopes3@2x.png'),font:'6人200阳光'},
-                    {iconImg:require('../assets/img/icon-Redenvelopes3@2x.png'),font:'奖励任意288皮肤'},
-                    {iconImg:require('../assets/img/icon-Redenvelopes3@2x.png'),font:'8人300养分'},
-                    {iconImg:require('../assets/img/icon-Redenvelopes3@2x.png'),font:'9人金色苹果种子'},
-                    {iconImg:require('../assets/img/icon-Redenvelopes3@2x.png'),font:'10人1000金币'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes3@2x.png',font:'6人200阳光'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes3@2x.png',font:'奖励任意288皮肤'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes3@2x.png',font:'8人300养分'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes3@2x.png',font:'9人1000金币'},
+                    {iconImg:'https://www.shuimukeji.cn/static/image/img/icon-Redenvelopes3@2x.png',font:'10人1000金币'},
                 ],
-                Show:false
+                Show:false,
+                share_number:0,
             }
+        },
+        mounted() {
+          this.getShare();
         },
         methods:{
             buttonPoput(){
                 this.Show=!this.Show
+            },
+            getShare(){
+                share().then(res=>{
+                    console.log("分享",res)
+                    // console.log("data",res.data)
+                    this.share_number = res
+                    // console.log("share_number",this.share_number)
+
+                })
             }
         }
     }
@@ -92,25 +120,29 @@
 
 <style scoped>
     .invitation_box{
-        position: fixed;
         width: 100%;
         height: 100%;
-        top: 0;
-        left: 0;
-
+        background:#FA2545;
     }
     .invitation_backgroundImg{
         width: 100%;
-        height: 100%;
-        position: fixed;
-        z-index: -1;
+    }
+    .invitation_button{
+        width: 285upx;
+        height: 70upx;
+        background:linear-gradient(0deg,rgba(255,180,61,1),rgba(255,221,129,1));
+        position: absolute;
+        z-index: 1;
+        top: 495upx;
+        left: 235upx;
+        border-radius: 40upx;
+        color: red;
+        line-height: 70upx;
     }
     .invitation_ContentBox{
+        position: absolute;
+        top: 55%;
         width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
     }
     .invitation_Content{
         width: 100%;
@@ -143,7 +175,7 @@
         width: 207upx;
         height: 80upx;
         float: right;
-        background-image: url("../assets/img/button728@2x.png");
+        background-image: url("https://www.shuimukeji.cn/static/image/img/button728@2x.png");
         text-align: center;
         line-height: 72upx;
         background-size: 100%,100%;
@@ -158,7 +190,7 @@
     .invitation_Content_border{
         width: 100%;
         height: 410upx;
-        background-image: url("../assets/img/background48@2x.png");
+        background-image: url("https://www.shuimukeji.cn/static/image/img/background48@2x.png");
         background-size:100% 100%;
         background-repeat:no-repeat;
         display: flex;
@@ -206,7 +238,7 @@
     .invitation_Content_border_downicon{
         width: 194upx;
         height: 60upx;
-        background-image: url("../assets/img/background1008@2x.png");
+        background-image: url("https://www.shuimukeji.cn/static/image/img/background1008@2x.png");
         display: flex;
         align-items: center;
         justify-content: center;
@@ -245,6 +277,6 @@
     }
     .banner{
         width: 100%;
-        height: 267upx;
+        height: 185upx;
     }
 </style>

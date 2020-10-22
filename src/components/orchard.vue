@@ -24,29 +24,30 @@
         </view>
       </view>
       <view class="orchard_popup_content_button">
-        <img src="../assets/img/button3@2x.png" alt="">
-        <view class="orchard_popup_content_button_font">
+        <img src="https://www.shuimukeji.cn/static/image/img/button3@2x.png" alt="">
+        <view class="orchard_popup_content_button_font" @click="eliminate_seed">
           推翻当前植物重新种植
         </view>
       </view>
     </view>
-    <img  mode="widthFix" @click="close" class="orchard_close" src="../assets/img/close@2x.png" alt="">
+    <img  mode="widthFix" @click="close" class="orchard_close" src="https://www.shuimukeji.cn/static/image/img/close@2x.png" alt="">
   </view>
 </template>
 
 <script>
   import {CommRequest} from "../comm/commRequest";
   import {GetWarehouse} from "../api/getWarehouse";
+  import { chan_chu } from "../api/chan_chu";
 
   export default {
     name: "orchard",
     data(){
       return{
         dataList:[
-          {id:1,img:require("../assets/img/SilverApple@2x.png"),content:"",font:"银色种子数量*",number:0},
-          {id:2,img:require("../assets/img/Walnut@2x.png"),content:"",font:"果核种子数量*",number:0},
-          {id:3,img:require("../assets/img/GoldenApple@2x.png"),content:"",font:"金苹果种子数量*",number:0},
-          {id:4,img:require("../assets/img/Wheat@2x.png"),content:"",font:"稻田种子数量*",number:0},
+          {id:1,img:"https://www.shuimukeji.cn/static/image/img/SilverApple@2x.png",content:"",font:"银色种子数量*",number:0},
+          {id:2,img:"https://www.shuimukeji.cn/static/image/img/Walnut@2x.png",content:"",font:"果核种子数量*",number:0},
+          {id:3,img:"https://www.shuimukeji.cn/static/image/img/GoldenApple@2x.png",content:"",font:"金苹果种子数量*",number:0},
+          {id:4,img:"https://www.shuimukeji.cn/static/image/img/Wheat@2x.png",content:"",font:"稻田种子数量*",number:0},
         ],
 
       }
@@ -70,6 +71,9 @@
       },
       plant(index){
         this.$emit("plant_seed",index)
+      },
+      eliminate_seed(data){
+        this.$emit("eliminate_seed")
       }
     }
   }
@@ -85,6 +89,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
   }
   .orchard_popup{
     width:690upx;
@@ -95,6 +100,7 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    position: relative;
   }
   .orchard_popup_titleBox{
     width: 100%;
@@ -212,9 +218,9 @@
   }
   .orchard_close{
     position: absolute;
-    top: 1081upx;
     width: 50upx;
     height: 50upx;
+    bottom: 180upx;
   }
 
 </style>

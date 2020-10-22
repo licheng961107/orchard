@@ -32,12 +32,23 @@
 			"style": {
 				"navigationBarTitleText": "我的余额"
 			}
-		}
-	,
+		},
 		{
 			"path": "components/invitation",
 			"style": {
 				"navigationBarTitleText": "邀好友"
+			}
+		},
+		{
+			"path": "components/Novicehelp",
+			"style": {
+				"navigationBarTitleText": "新手教程指引"
+			}
+		},
+		{
+			"path": "components/user",
+			"style": {
+				"navigationBarTitleText": "用户信息"
 			}
 		}
 	],

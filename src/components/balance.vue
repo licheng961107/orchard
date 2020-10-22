@@ -1,14 +1,14 @@
 <template>
     <view class="balance_box">
         <view class="balance_Title">
-            <view class="balance_TitleFont">52元宝</view>
+            <view class="balance_TitleFont">{{money}}元宝</view>
         </view>
         <view class="balance_Withdrawalamount">
             <view class="balance_Withdrawalamount_title">提现余额</view>
             <view class="balance_Withdrawalamount_moneyBxo">
                 <view class="balance_Withdrawalamount_money" v-for="(item,index ) in moneyList" :key="index">
 <!--                    <img :src="item.moneyImg" alt="">-->
-                    <view @click="abc(index)" class="balance_Withdrawalamount_moneyfont">￥{{item.money}}.00</view>
+                    <view @click="click_money(index)" class="balance_Withdrawalamount_moneyfont">￥{{item.money}}.00</view>
                 </view>
             </view>
         </view>
@@ -16,10 +16,11 @@
             <view class="balance_downBox_content">
                 <view class="balance_BannerimgBox">
                     <view class="balance_Bannerimg">
-                        <img mode="widthFix" src="../assets/img/Banner4@2x.png" alt="">
+                        <img mode="widthFix" src="https://www.shuimukeji.cn/static/image/img/Banner4@2x.png" alt="">
+
                     </view>
                     <view class="balance_Bannerimg">
-                        <img mode="widthFix" src="../assets/img/Banner4@2x.png" alt="">
+                        <img mode="widthFix" src="https://www.shuimukeji.cn/static/image/img/Banner4@2x.png" alt="">
                     </view>
                 </view>
                 <view class="balance_downTips">
@@ -39,7 +40,9 @@
 </template>
 
 <script>
-    import { withdrawal } from "../api/pay_withdrawal"
+    import { plant_warehouse } from "../api/pay_withdrawal"
+    import { all_asset } from "../api/all_asset";
+
     export default {
         name: "balance",
         onShow(){
@@ -57,24 +60,44 @@
                     { id:3, money:30},
                     { id:4, money:80},
                     { id:5, money:120},
-                ]
+                ],
+                money:0,
             }
         },
+        mounted() {
+            this.query_all_asset();
+        },
         methods:{
-            abc(index){
-                console.log()
+            click_money(index){
                 let data = {
                     money:this.moneyList[index].money
                 }
-                withdrawal(data)
-            }
+                uni.showModal({
+                    title:'提现',
+                    content:`是否花费${this.moneyList[index].money*20}元宝提现${this.moneyList[index].money}元`,
+                    success(res){
+                        if (res.confirm) {
+                            debugger
+                            plant_warehouse(data).then(res=>{
+                                console.log("rescode",res)
+                            })
+                        } else if (res.cancel) {
+                        }
+                }
+                })
+
+            },
+            query_all_asset(){
+                all_asset().then(res=>{
+                    this.money = res.gold_ingot;
+                })
+            },
         }
     }
 </script>
 
 <style scoped>
     .balance_box{
-        position: fixed;
         width: 100%;
         height: 100%;
         left: 0;
@@ -136,7 +159,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-image: url("../assets/img/icon-money.png");
+        background-image: url("https://www.shuimukeji.cn/static/image/img/icon-money.png");
+
         background-repeat: no-repeat;
         background-size:100% 100%;
         -moz-background-size: 100% 100%;
@@ -193,7 +217,8 @@
     .balance_downTips{
         width:700upx;
         height: 243upx;
-        background-image: url("../assets/img/background2@2x.png");
+        background-image: url("https://www.shuimukeji.cn/static/image/img/background2@2x.png");
+
         background-repeat: no-repeat;
         background-size:100% 100%;
         -moz-background-size: 100% 100%;

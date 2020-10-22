@@ -9,8 +9,11 @@
 
 	import OrchardPage from "../../components/orchardPage";
 	import {CommRequest} from "../../comm/commRequest";
-	import {commLogin, login} from "../../api/login";
+
+
+
 	export default {
+
 		components: {
 			OrchardPage,
 		},
@@ -21,7 +24,9 @@
 		},
 		methods: {
 			getUser(e){
-				commLogin(e)
+				// commLogin(e, function () {
+				// 	all_asset();
+				// })
 			}
 		}
 	}
@@ -29,10 +34,10 @@
 
 <style>
 	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+		/*display: flex;*/
+		/*flex-direction: column;*/
+		/*align-items: center;*/
+		/*justify-content: center;*/
 	}
 
 </style>

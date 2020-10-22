@@ -1,14 +1,21 @@
 <template>
     <view class="Brightandbeautiful_box">
-        <img class="Brightandbeautiful_img" src="../assets/img/icon-sunlightImg@2x.png" alt="">
+        <img @click="click_sun_shine" class="Brightandbeautiful_img" src="https://www.shuimukeji.cn/static/image/img/icon-sunlightImg@2x.png" alt="">
+
         <view class="Brightandbeautiful_font">明媚</view>
-        <img class="Bright_and_beautiful" src="../assets/img/background-Bright_and_beautiful.png" alt="">
+        <img class="Bright_and_beautiful" src="https://www.shuimukeji.cn/static/image/img/background-Bright_and_beautiful.png" alt="">
+
     </view>
 </template>
 
 <script>
     export default {
-        name: "Brightandbeautiful"
+        name: "Brightandbeautiful",
+        methods:{
+            click_sun_shine(){
+                this.$emit("sun_shine")
+            }
+        }
     }
 </script>
 

@@ -23,12 +23,18 @@ class CommRequest {
 
         return new Promise((resolve, reject) => {
             requestParams["success"] = (res) =>{
-                if(res.data.code != 200){
-                    uni.showToast({
-                        title:res.data.msg
 
-                    })
-                }else{
+                if(res.data.code != 200){
+                    if (res.data.code == 10020){
+                        resolve(res.data.code)
+                    }else{
+                        uni.showToast({
+                            title:res.data.msg
+                        })
+                    }
+                }
+
+                else{
                     resolve(res.data.data)
                 }
             }

@@ -6,8 +6,7 @@
                     <view class="PersonalInformation_Content_inputborder">
                         <view class="PersonalInformation_Content_fill">姓名:</view>
                         <view class="PersonalInformation_Content_input">
-                            <input v-model="name" :disabled="name?'disabled':''" type="text" >
-<!--                            <input v-model="name"  type="text" >-->
+                            <input v-model="name" :disabled="name_state" type="text" >
                             <view v-if="nameBoolean"  class="PersonalInformation_Content_inputFont">(不可修改)</view>
                         </view>
                     </view>
@@ -24,8 +23,7 @@
                     <view class="PersonalInformation_Content_inputborder">
                         <view class="PersonalInformation_Content_fill">微信号:</view>
                         <view class="PersonalInformation_Content_input">
-                            <input  v-model="wxnumber"  :disabled="wxnumber?'disabled':''"  type="text" >
-<!--                            <input  v-model="wxnumber"    type="text" >-->
+                            <input  v-model="wxnumber"  :disabled="wxnumber_state"  type="text" >
                             <view v-if="wxBoolean" class="PersonalInformation_Content_inputFont">(不可修改)</view>
                         </view>
                     </view>
@@ -44,7 +42,8 @@
                 <button @click="getUser()">保存信息</button>
             </view>
         </view>
-        <img mode="widthFix" @click="close" class="close" src="../assets/img/close@2x.png" alt="">
+        <img mode="widthFix" @click="close" class="close" src="https://www.shuimukeji.cn/static/image/img/close@2x.png" alt="">
+
     </view>
 </template>
 
@@ -59,12 +58,15 @@
         data(){
             return{
                 id:0,
+                user_id:0,
                 name:"",
                 phone:"",
                 wxnumber:"",
                 ShippingAddress:"",
                 nameBoolean:true,
-                wxBoolean:true
+                wxBoolean:true,
+                name_state:'',
+                wxnumber_state:''
             }
         },
         watch:{
@@ -72,7 +74,7 @@
                 if(newData){
                     this.nameBoolean = false
                 }else{
-                    this.nameBoolean =true
+                    this.nameBoolean = true
                 }
             },
             wxnumber(newData, oldData){
@@ -81,66 +83,76 @@
                 }else{
                     this.wxBoolean = true
                 }
-            }
+            },
+
         },
         mounted(){
             this.getData()
         },
         methods:{
+            //查询用户
             getData(){
                 query_user().then(res=>{
-                    console.log(res)
-                    this.id = res.user_id;
+                    this.id = res.id;
+                    this.user_id = res.user_id;
                     this.name = res.real_person_name;
                     this.phone = res.phone_number;
                     this.wxnumber = res.wx_account;
                     this.ShippingAddress = res.delivery_address;
+
+                    if(this.id != 0){
+                        this.name_state = 'disabled'
+                        this.wxnumber_state = 'disabled'
+                    }else {
+                        this.name_state = ''
+                        this.wxnumber_state = ''
+                    }
+
                 })
             },
             getUser(){
                 let edit_data = {
-                    phone_number:this.phone,
-                    delivery_address:this.ShippingAddress,
-                    real_person_name : this.name,
-                    wx_account : this.wxnumber
-                }
-                if(this.id){
-                    edit_data.id = this.id
-                }
+                    phone_number :this.phone,
+                    delivery_address :this.ShippingAddress,
+                    real_person_name  : this.name,
+                    wx_account  : this.wxnumber
+                };
 
-                if(this.id <= 0){
-                    add_user(edit_data).then( res => {
-                        uni.showToast({
-                            title:"添加成功",
-                            icon:"success",
-                            duration:2000,
-                        })
+                if(this.user_id){
+                    edit_data.id = this.user_id
+                }
+                if (this.name == ""){
+                    uni.showToast({
+                        title:"请输入姓名"
                     })
-
-                }else {
-                    modif(edit_data).then( res => {
-                        if ( this.phone !="" && this.ShippingAddress !="" ){
-                            uni.showToast({
-                                title:"保存成功",
-                                icon:"success",
-                                duration:2000,
-                            })
-                        }else{
-                            uni.showToast({
-                                title:"保存失败",
-                                icon:"success",
-                                duration:2000,
-                            })
-                        }
-                        console.log(res)
+                }else if(this.phone == ""){
+                    uni.showToast({
+                        title:"请输入电话号"
                     })
+                } else if(this.wxnumber == ""){
+                    debugger
+                    uni.showToast({
+                        title:"请输入微信号"
+                    })
+                }else if(this.ShippingAddress == ""){
+                    uni.showToast({
+                        title:"请输入地址"
+                    })
+                }else{
+                    modif(edit_data).then(res=>{
 
+                    })
                 }
+
+
+
+
 
             },
 
             close(){
                 this.$emit("onclose")
+                this.name_state=true
             }
 
         }
@@ -252,6 +264,6 @@
         width: 50upx;
         height: 50upx;
         position: absolute;
-        top: 980upx;
+        bottom: 270upx;
     }
 </style>

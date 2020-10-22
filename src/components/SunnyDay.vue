@@ -1,6 +1,7 @@
 <template>
     <view class="SunnyDay_box">
-        <img @click="click_sun_shine" class="SunnyDay_img" src="../assets/img/icon-sunlightImg@2x.png" alt="">
+        <img @click="click_sun_shine" class="SunnyDay_img" src="https://www.shuimukeji.cn/static/image/img/icon-sunlightImg@2x.png" alt="">
+
         <view class="SunnyDay_font">晴天</view>
     </view>
 </template>

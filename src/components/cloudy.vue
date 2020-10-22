@@ -1,14 +1,21 @@
 <template>
     <view class="cloudy_box">
-        <img class="cloudy_img" src="../assets/img/icon-sunlightImg@2x.png" alt="">
+        <img class="cloudy_img" src="https://www.shuimukeji.cn/static/image/img/icon-sunlightImg@2x.png" alt="">
+
         <view class="cloudy_font">多云</view>
-        <img  class="cloudy_img2" src="../assets/img/background-cloudy.png" alt="">
+        <img  class="cloudy_img2" src="https://www.shuimukeji.cn/static/image/img/background-cloudy.png" alt="">
+        <view   @click="click_sun_shine"  class="clicksum"></view>
     </view>
 </template>
 
 <script>
     export default {
-        name: "cloudy"
+        name: "cloudy",
+        methods:{
+            click_sun_shine(){
+                this.$emit("sun_shine")
+            }
+        }
     }
 </script>
 
@@ -40,5 +47,11 @@
         height: 390upx;
         left: 0;
         z-index: 0;
+    }
+    .clicksum{
+        width:140upx;
+        height: 147upx;
+        position: absolute;
+        z-index: 3;
     }
 </style>

@@ -2,7 +2,6 @@
 import { CommRequest } from '../comm/commRequest'
 
 export function sun_shine(data) {
-
     return CommRequest.doRequest({
         url:"/draw_article/sun_shine",
         method:"POST",

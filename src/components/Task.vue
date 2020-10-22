@@ -3,59 +3,176 @@
         <view class="Task_content">
             <view class="Task_content_title">任务</view>
             <view class="Task_content_border" >
-                <view class="Task_content_MissionDetails" v-for="(item,index) in MissionDetailsList" :key="index">
+<!--                领取2次水份-->
+                <view class="Task_content_MissionDetails" >
                     <view class="Task_content_MissionDetails_right">
-                        <view class="Task_content_MissionDetails_right_imgBox" :style="{'background': ColorList[index]}">
-                            <img  class="Task_content_MissionDetails_right_img" :src=item.img alt="">
+                        <view class="Task_content_MissionDetails_right_imgBox" style="background:rgba(190, 255, 254, 1)">
+                            <img  class="Task_content_MissionDetails_right_img" src="https://www.shuimukeji.cn/static/image/img/icon-c.png" alt="">
                         </view>
                         <view class="Task_content_MissionDetails_right_fontBox">
-                            <view class="Task_content_MissionDetails_right_font"> {{item.name}}</view>
-                            <view>{{item.reward}}</view>
+                            <view class="Task_content_MissionDetails_right_font"> 领取2次水份</view>
+                            <view>奖励50金币</view>
                         </view>
                     </view>
                     <view class="Task_content_MissionDetails_left">
                         <view class="Task_content_MissionDetails_left_number">
-                            <view class="Task_content_MissionDetails_left_number_one">{{item.complete}}</view>
-                            <view>{{item.frequency}}</view>
+                            <view class="Task_content_MissionDetails_left_number_one">{{water_status==1?'1':'0'}}</view>
+                            <view>/1</view>
                         </view>
                         <view class="Task_content_MissionDetails_left_receive">
-                            <button>领取</button>
+                            <button  v-if="water_status==0"  class=" no_complete">去完成</button>
+                            <button  v-if="water_status!=0" @click="receive_task(3)"  :class="water_status == 2? 'receive':'no_complete'">领取</button>
+                        </view>
+                    </view>
+                </view>
+<!--                领取2次养分-->
+                <view class="Task_content_MissionDetails" >
+                    <view class="Task_content_MissionDetails_right">
+                        <view class="Task_content_MissionDetails_right_imgBox" style="background:rgba(255, 204, 204, 1)">
+                            <img  class="Task_content_MissionDetails_right_img" src="https://www.shuimukeji.cn/static/image/img/icon-b.png" alt="">
+                        </view>
+                        <view class="Task_content_MissionDetails_right_fontBox">
+                            <view class="Task_content_MissionDetails_right_font"> 领取2次养分</view>
+                            <view>奖励50金币</view>
+                        </view>
+                    </view>
+                    <view class="Task_content_MissionDetails_left">
+                        <view class="Task_content_MissionDetails_left_number">
+                            <view class="Task_content_MissionDetails_left_number_one">{{nutrient_status==1?'1':'0'}}</view>
+                            <view>/1</view>
+                        </view>
+                        <view class="Task_content_MissionDetails_left_receive">
+                            <button  v-if="nutrient_status==0"  class=" no_complete">去完成</button>
+                            <button  v-if="nutrient_status!=0" @click="receive_task(4)"  :class=" nutrient_status== 2? 'receive':'no_complete'">领取</button>
+                        </view>
+                    </view>
+                </view>
+<!--                领取2次金币-->
+                <view class="Task_content_MissionDetails" >
+                    <view class="Task_content_MissionDetails_right">
+                        <view class="Task_content_MissionDetails_right_imgBox" style="background:rgba(190, 255, 254, 1) ">
+                            <img  class="Task_content_MissionDetails_right_img" src="https://www.shuimukeji.cn/static/image/img/icon-c.png" alt="">
+                        </view>
+                        <view class="Task_content_MissionDetails_right_fontBox">
+                            <view class="Task_content_MissionDetails_right_font"> 领取2次金币</view>
+                            <view>奖励10水分10阳光</view>
+                        </view>
+                    </view>
+                    <view class="Task_content_MissionDetails_left">
+                        <view class="Task_content_MissionDetails_left_number">
+                            <view class="Task_content_MissionDetails_left_number_one">{{gold_coin_status==1?'1':'0'}}</view>
+                            <view>/1</view>
+                        </view>
+                        <view class="Task_content_MissionDetails_left_receive">
+                            <button v-if="gold_coin_status==0"  class=" no_complete">去完成</button>
+                            <button  v-if="gold_coin_status!=0" @click="receive_task(1)"  :class=" gold_coin_status== 2? 'receive':'no_complete'">领取</button>
+                        </view>
+                    </view>
+                </view>
+<!--                领取5次阳光-->
+                <view class="Task_content_MissionDetails" >
+                    <view class="Task_content_MissionDetails_right">
+                        <view class="Task_content_MissionDetails_right_imgBox" style="background:rgba(255, 242, 188, 1) ">
+                            <img  class="Task_content_MissionDetails_right_img" src="https://www.shuimukeji.cn/static/image/img/icon-c.png" alt="">
+                        </view>
+                        <view class="Task_content_MissionDetails_right_fontBox">
+                            <view class="Task_content_MissionDetails_right_font"> 领取5次阳光</view>
+                            <view>奖励75金币</view>
+                        </view>
+                    </view>
+                    <view class="Task_content_MissionDetails_left">
+                        <view class="Task_content_MissionDetails_left_number">
+                            <view class="Task_content_MissionDetails_left_number_one">{{sun_shine_status==1?'1':'0'}}</view>
+                            <view>/1</view>
+                        </view>
+                        <view class="Task_content_MissionDetails_left_receive">
+                            <button v-if="sun_shine_status==0"  class=" no_complete">去完成</button>
+                            <button  v-if="sun_shine_status!=0" @click="receive_task(2)"  :class=" sun_shine_status== 2? 'receive':'no_complete'">领取</button>
+                        </view>
+                    </view>
+                </view>
+<!--                观看5次广告-->
+                <view class="Task_content_MissionDetails" >
+                    <view class="Task_content_MissionDetails_right">
+                        <view class="Task_content_MissionDetails_right_imgBox" style="background:rgba(255, 242, 188, 1)">
+                            <img  class="Task_content_MissionDetails_right_img" src="https://www.shuimukeji.cn/static/image/img/icon-c.png" alt="">
+                        </view>
+                        <view class="Task_content_MissionDetails_right_fontBox">
+                            <view class="Task_content_MissionDetails_right_font">观看5次广告</view>
+                            <view>领取2元红包</view>
+                        </view>
+                    </view>
+                    <view class="Task_content_MissionDetails_left">
+                        <view class="Task_content_MissionDetails_left_number">
+                            <view class="Task_content_MissionDetails_left_number_one">{{ad_status==1?'1':'0'}}</view>
+                            <view>/1</view>
+                        </view>
+                        <view class="Task_content_MissionDetails_left_receive">
+                            <button v-if="ad_status==0"  class=" no_complete">去完成</button>
+                            <button  v-if="ad_status!=0" @click="receive_task(5)"  :class=" ad_status== 2? 'receive':'no_complete'">领取</button>
                         </view>
                     </view>
                 </view>
             </view>
         </view>
         <view class="Task_Banner">
-            <img mode="widthFix"  src="../assets/img/Banner@2x.png" alt="">
+            <img mode="widthFix"  src="https://www.shuimukeji.cn/static/image/img/Banner@2x.png" alt="">
         </view>
     </view>
 </template>
 
 <script>
+    import { user_task } from "../api/user_task";
+    import { Finish_task } from "../api/complete_task";
+
     export default {
         name: "Task",
+        mounted() {
+            this.task();
+        },
         data(){
             return{
-                MissionDetailsList:[
-                    {img:require('../assets/img/icon-c.png'),name:'领取2次水份',reward:'奖励50金币',complete:'1',frequency:'/1'},
-                    {img:require('../assets/img/icon-c.png'),name:"领取2次水份",reward:'奖励50金币',complete:'1',frequency:'/1'},
-                    {img:require('../assets/img/icon-c.png'),name:"领取2次水份",reward:'奖励10水分10阳光',complete:'1',frequency:'/1'},
-                    {img:require('../assets/img/icon-b.png'),name:"领取2次水份",reward:'领取75金币',complete:'1',frequency:'/1'},
-                    {img:require('../assets/img/icon-a.png'),name:"领取2次水份",reward:'领取2元密匙',complete:'1',frequency:'/1'},
-                ],
-                ColorList:[
-                    'rgba(190, 255, 254, 1)',
-                    'rgba(255, 204, 204, 1)',
-                    'rgba(190, 255, 254, 1)',
-                    'rgba(255, 242, 188, 1)',
-                    'rgba(255, 242, 188, 1)',
-                ],
-
+                today:0,//时间年月日
+                gold_coin_status:0,//领取金币任务完成
+                gold_coin:0,//金币任务:2次金币
+                nutrient:0,//领取两次养分完成任务
+                nutrient_status:0,//领养分任务:1完成
+                ad:0,//广告任务次数
+                ad_status:0,//广告任务状态:1完成
+                sun_shine:0,//阳光任务5次阳光
+                sun_shine_status:0,//领阳光任务:1完成
+                water_status:0,//领水任务:1完成
+                water:0,//领水任务:领两次水完成任务
             }
         },
         methods:{
-            closeMantle(){
+            task(){
+                user_task().then(res=>{
+                    this.today = res.today;
+                    this.ad_status = res.ad_status;
+                    // this.ad = res.ad
+                    this.gold_coin_status = res.gold_coin_status;
+                    // this.gold_coin = res.gold_coin;
+                    // this.nutrient = res.nutrient;
+                    this.nutrient_status = res.nutrient_status;
+                    // this.sun_shine = res.sun_shine;
+                    this.sun_shine_status = res.sun_shine_status;
+                    // this.water = res.water;
+                    this.water_status = res.water_status;
+                    console.log('任务',res)
+                })
+            },
+            receive_task(index){
+                let data = {
+                    task_type : index
+                }
+                console.log('领取',index)
+                Finish_task(data).then(res=>{
+                    console.log("任务任务",res)
+                    this.task();
+                })
             }
+
         }
     }
 </script>
@@ -81,8 +198,6 @@
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-
-
     }
     .Task_content{
         width:690upx;
@@ -190,20 +305,33 @@
         display: flex;
         align-items: flex-end;
     }
-    .Task_content_MissionDetails_left_receive>button{
+    .no_complete{
         width: 122upx;
         height: 40upx;
-        background:linear-gradient(0deg,rgba(255,180,61,1),rgba(255,221,129,1));
+        /*background:linear-gradient(0deg,rgba(237, 237, 237, 1),rgba(234, 234, 234, 1));*/
+
+        background: #EDEDED;
         border-radius:25upx;
+        font-size:28upx;
+        font-family:PingFang SC;
+        font-weight:bold;
+        color:rgba(255,255,255,1);
+        white-space: nowrap;
+        line-height: 40upx;
+    }
+    .receive{
+        width: 122upx;
+        height: 40upx;
+        background: linear-gradient(0deg, #FFB33D, #FFDC81);
+        border-radius: 25px;
         border: none;
         outline: none;
         font-size:28upx;
         font-family:PingFang SC;
         font-weight:bold;
         color:rgba(255,255,255,1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        white-space: nowrap;
+        line-height: 40upx;
     }
     .Task_Banner{
         width:690upx;

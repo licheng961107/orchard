@@ -1,19 +1,22 @@
 <template>
     <view class="PersonalCenter_box">
+        <view v-if="hintMask" class="orchardPage_box_Mantle"></view>
         <view class="PersonalCenter_TitleBox">
             <view class="PersonalCenter_TitleBox_right">
                 <view class="PersonalCenter_TitleBox_right_border">
                     <view class="PersonalCenter_TitleBox_right_imgbox">
                         <view class="PersonalCenter_TitleBox_right_img">
-
+                            <img class="PersonalCenter_TitleBox_right_img" mode="WidthFix" :src=user_img alt="">
                         </view>
                     </view>
                     <view class="PersonalCenter_TitleBox_right_fontBox">
                         <view class="PersonalCenter_TitleBox_right_font">
-                            <view>无敌李大成</view>
-                            <view class="PersonalCenter_TitleBox_right_font_age">25岁</view>
+                            <view>{{user_name}}</view>
                         </view>
                     </view>
+                </view>
+                <view class="Secret_key" @click="toSecret_key">
+                    合伙人秘钥输入
                 </view>
             </view>
             <view class="PersonalCenter_TitleBox_left">
@@ -29,18 +32,19 @@
         </view>
         <view class="PersonalCenter_ContentDataBox">
             <view class="PersonalCenter_ContentDataBox_TopBox">
-                <view class="PersonalCenter_ContentDataBox_TopBoxData" v-for="(item ,index) in DataList" :key="index">
+                <view class="PersonalCenter_ContentDataBox_TopBoxData"  @click="operation(item.name)" v-for="(item ,index) in DataList" :key="index">
 
                     <view v-if="item.name != '提现入口' && item.name != '数据清零'">
                         <view class="PersonalCenter_ContentDataBox_TopBoxData_number" :style="{'color': ColorList[index]}">{{item.number}}</view>
                     </view>
                     <view v-else>
 
-                        <view  @click="toWithdrawal" class="PersonalCenter_ContentDataBox_TopBoxData_img" v-if="item.name == '提现入口'">
-                            <img mode="widthFix"  src="../assets/img/icon-Withdrawal@2x.png" alt="">
+                        <view   class="PersonalCenter_ContentDataBox_TopBoxData_img" v-if="item.name == '提现入口'">
+                            <img mode="widthFix"  src="https://www.shuimukeji.cn/static/image/img/icon-Withdrawal@2x.png" alt="">
                         </view>
-                        <view class="PersonalCenter_ContentDataBox_TopBoxData_img" v-if="item.name == '数据清零'">
-                            <img mode="widthFix"  src="../assets/img/icon-Clearing@2x.png" alt="">
+                        <view  class="PersonalCenter_ContentDataBox_TopBoxData_img" v-if="item.name == '数据清零'">
+                            <img mode="widthFix"  src="https://www.shuimukeji.cn/static/image/img/icon-Clearing@2x.png" alt="">
+
                         </view>
                     </view>
                     <view class="PersonalCenter_ContentDataBox_TopBoxData_font">{{item.name}}</view>
@@ -49,11 +53,11 @@
             </view>
 
 
-            <view class="PersonalCenter_ContentDataBox_DownBox">
+            <view class="PersonalCenter_ContentDataBox_DownBox"  @click="toreceive">
                 <view class="PersonalCenter_ContentDataBox_DownBox_ImgBox">
                     <view class="PersonalCenter_ContentDataBox_DownBox_Img">
-                        <img mode="widthFix "  src="../assets/img/backgroundImg34@2x.png" alt="">
-                        <img mode="widthFix "  src="../assets/img/backgroundImg694@2x.png" alt="">
+                        <img mode="widthFix "  src="https://www.shuimukeji.cn/static/image/img/backgroundImg34@2x.png" alt="">
+                        <img mode="widthFix "  src="https://www.shuimukeji.cn/static/image/img/backgroundImg694@2x.png" alt="">
                     </view>
                     <view class="PersonalCenter_ContentDataBox_DownFontBox">
                         <view class="PersonalCenter_ContentDataBox_DownFont">40元兑换价值488任意皮肤</view>
@@ -61,7 +65,7 @@
                     </view>
                 </view>
                 <view class="PersonalCenter_ContentDataBox_DownBox_Button">
-                    <img  mode="widthFix"  @click="toreceive" src="../assets/img/button4@2x.png" alt="">
+                    <img  mode="widthFix"  src="https://www.shuimukeji.cn/static/image/img/button4@2x.png" alt="">
                 </view>
             </view>
 
@@ -69,25 +73,43 @@
         <view class="PersonalCenter_DownImgBox">
             <view class="PersonalCenter_DownImgborder">
                 <view class="PersonalCenter_DownImg">
-                    <img mode="widthFix "  class="PersonalCenter_DownImg" src="../assets/img/Banner@2x.png" alt="">
+                    <img mode="widthFix "  class="PersonalCenter_DownImg" src="https://www.shuimukeji.cn/static/image/img/Banner@2x.png" alt="">
                 </view>
                 <view class="PersonalCenter_DownImg">
-                    <img mode="widthFix "   class="PersonalCenter_DownImg1" src="../assets/img/Banner4@2x.png" alt="">
+                    <img mode="widthFix "   class="PersonalCenter_DownImg1" src="https://www.shuimukeji.cn/static/image/img/Banner4@2x.png" alt="">
                 </view>
             </view>
+        </view>
+        <view class="Secret_keyBox" v-if="Secret_key">
+            <view class="Secret_keyTitle">合伙人密钥匙</view>
+            <view class="Secret_keyinputBox">
+                <input class="Secret_keyinput" v-model="key" placeholder="输入合伙人密匙..." type="text">
+            </view>
+            <view class="Secret_downbtnbox">
+                <button class="Secret_btn1" @click="Submit_key">确定</button>
+                <button class="Secret_btn2" @click="close" >退出</button>
+            </view>
+            <img  mode="widthFix" @click="close" class="orchard_close" src="https://www.shuimukeji.cn/static/image/img/close@2x.png" alt="">
+
         </view>
     </view>
 </template>
 
 <script>
+    import {all_asset } from "../api/all_asset";
+    import { secret_key } from "../api/secret_key"
+    import {eliminate} from "../api/clear_diamonds";
+
     export default {
         name: "PersonalCenter",
         onShow(){
+            this.get_user();
             wx.setNavigationBarColor({
                 frontColor:"#ffffff",
                 backgroundColor:"#6eceff"
             })
         },
+
         data(){
             return{
                 DataList:[
@@ -95,7 +117,7 @@
                     {name:'金币数量',number:1520},
                     {name:'砖石数量',number:1520},
                     {name:'银蛋数量',number:1520},
-                    {name:'能提数量',number:1520},
+                    {name:'能提金额',number:1520},
                     {name:'提现入口',number:"",},
                     {name:'数据清零',number:"",},
                     {name:'金蛋数量',number:1520},
@@ -110,11 +132,31 @@
                     'rgba(51,51,51,1)',
                     'rgba(51,51,51,1)',
                 ],
-                show:""
-
+                show:"",
+                user_name:'',
+                user_img:'',
+                hintMask:0,
+                Secret_key:0,
+                key:''
             }
         },
+        mounted() {
+            this.get_user();
+        },
         methods:{
+            //获取用户信息
+            get_user(){
+                all_asset().then(res =>{
+                    this.user_name = res.wx_login_data.nick_name
+                    this.user_img = res.wx_login_data.avatar_url
+                    this.DataList[0].number = res["gold_ingot"];
+                    this.DataList[1].number = res["gold_num"];
+                    this.DataList[2].number = res["diamonds"];
+                    this.DataList[3].number = res["silver_eggs"];
+                    this.DataList[4].number = res["cash"];
+                    this.DataList[7].number = res["golden_eggs"];
+                })
+            },
             chickPoput(){
                 this.show = !this.show
             },
@@ -123,17 +165,155 @@
                     url:'/components/ReceiveRewards'
                 })
             },
-            toWithdrawal(){
-                console.log(1)
-                uni.navigateTo({
-                    url:'/components/balance'
-                })
+            operation(data){
+                let that = this
+                if(data == '提现入口'){
+                    uni.navigateTo({
+                        url:'/components/balance'
+                    })
+                }
+                if(data == '数据清零'){
+                    uni.showModal({
+                        title:'数据清零',
+                        content:'是否清除数据',
+                        success(res){
+                            if(res.confirm){
+                                eliminate();
+                                that.get_user();
+                            }else if(res.cancel){
+                            }
+                        },
+                    })
+                }
             },
+            toSecret_key(){
+                this.Secret_key = 1
+                this.hintMask = 1
+
+            },
+            Submit_key(){
+                let key = {
+                    secret : "hehuoren2020"
+                }
+                if(this.key == ""){
+                    uni.showToast({
+                        title:'请填写密匙'
+                    })
+                    console.log("1")
+                }else if(this.key != "hehuoren2020"){
+                    uni.showToast({
+                        title:'密匙错误'
+                    })
+                    console.log("2")
+                } else {
+                    secret_key(key).then(res=>{
+                        uni.showToast({
+                            title:'兑换成功'
+                        })
+                        this.Secret_key = 0
+                        this.hintMask = 0
+                    });
+                }
+            },
+            close(){
+                this.Secret_key = 0
+                this.hintMask = 0
+                this.key = ""
+            }
         }
     }
 </script>
 
 <style scoped>
+    .Secret_keyBox{
+        width: 680upx;
+        height: 534upx;
+        background: #FFECBE;
+        border-radius: 20upx;
+        position: absolute;
+        z-index: 4;
+        top: 20%;
+        display: flex;
+        align-content: space-around;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .Secret_keyTitle{
+        width: 206upx;
+        height: 64upx;
+        background: linear-gradient(0deg, #FFB33D, #FFDC81);
+        border-radius: 32upx;
+        font-size: 30upx;
+        font-family: PingFang SC;
+        font-weight: bold;
+        color: #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .Secret_keyinputBox{
+        width: 100%;
+        height: 83upx;
+        display: flex;
+        justify-content: center;
+    }
+    .Secret_keyinput{
+        width: 470upx;
+        height: 83upx;
+        background: white;
+        float: contour;
+        border: 2px solid #FFB33D;
+        border-radius: 10upx;
+    }
+    .Secret_downbtnbox{
+        width: 555upx;
+        height: 74upx;
+        display: flex;
+        justify-content: space-between;
+    }
+    .Secret_btn1{
+        width: 172upx;
+        height: 74upx;
+        border-radius: 32upx;
+        background:white;
+        font-size: 30upx;
+        font-family: PingFang SC;
+        font-weight: bold;
+        color: #FFA000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .Secret_btn2{
+        width: 172upx;
+        height: 74upx;
+        border-radius: 32upx;
+        background:#FFA000;
+        font-size: 30upx;
+        font-family: PingFang SC;
+        font-weight: bold;
+        color: #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .orchardPage_box_Mantle{
+        background-color:#000000;
+        left:0;
+        opacity: 0.5;
+        position: fixed;
+        top: 0;
+        z-index: 3;
+        filter: alpha(opacity=50);
+        width: 100%;
+        height: 100%;
+    }
+    .orchard_close{
+        position: absolute;
+        width: 50upx;
+        height: 50upx;
+        bottom: -77upx;
+    }
     .PersonalCenter_box{
         position: fixed;
         top: 0;
@@ -152,13 +332,19 @@
         width: 750upx;
         height: 192upx;
         display: flex;
+
     }
     .PersonalCenter_TitleBox_right{
         width: 50%;
-        display: flex;
-        align-items: flex-start;
-        justify-content: start;
         padding: 25upx 25upx 0 25upx;
+    }
+    .Secret_key{
+        width:135upx;
+        height: 40upx;
+        background: #FFECBE;
+        border-radius:10upx;
+        font-size: 19upx;
+        line-height: 40upx;
     }
     .PersonalCenter_TitleBox_right_border{
         width: 100%;
